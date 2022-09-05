@@ -20389,5 +20389,695 @@
         "x": 1285,
         "y": 721,
         "wires": []
+    },
+    [
+    {
+        "id": "f947788.96a2488",
+        "type": "subflow",
+        "name": "Update labels",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 70,
+                "y": 77,
+                "wires": [
+                    {
+                        "id": "70fe9173.84e56"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 650,
+                "y": 77,
+                "wires": [
+                    {
+                        "id": "cc633084.d7567",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "Name",
+                "type": "str",
+                "value": ""
+            }
+        ],
+        "color": "#DDAA99"
+    },
+    {
+        "id": "cc633084.d7567",
+        "type": "function",
+        "z": "f947788.96a2488",
+        "name": "",
+        "func": "let config = msg.config;\n/*let enable = context.get('enable');\nif(enable===undefined) {\n    enable = true;\n}\nif(msg.enabled!==undefined) {\n    enable = msg.enabled;\n}\ncontext.set('enable',enable);\nmsg.enabled = enable;*/\n    let language = \"SE\";\n    if(config.system!==undefined && config.system.language!==undefined) {\n        language = config.system.language;\n    }\n    let name = env.get(\"Name\");\n    let translate = global.get('translate');\n    let info = name;\n    if(translate!==undefined && translate.dash!==undefined && translate.dash[name]!==undefined && translate.dash[name][language]!==undefined) {\n        info = translate.dash[name][language]\n    }\nmsg.label = info;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 435,
+        "y": 84,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "70fe9173.84e56",
+        "type": "nibe-request",
+        "z": "f947788.96a2488",
+        "server": "844659a2.8d8508",
+        "name": "Config",
+        "x": 197,
+        "y": 77,
+        "wires": [
+            [
+                "cc633084.d7567"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "cf9e44f0.ed7da8",
+        "type": "nibe-input",
+        "z": "f947788.96a2488",
+        "server": "844659a2.8d8508",
+        "name": "Config",
+        "add": false,
+        "x": 106,
+        "y": 154,
+        "wires": [
+            [
+                "59edfea5.fe0e3"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "59edfea5.fe0e3",
+        "type": "change",
+        "z": "f947788.96a2488",
+        "name": "",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "config",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 307,
+        "y": 147,
+        "wires": [
+            [
+                "cc633084.d7567"
+            ]
+        ]
+    },
+    {
+        "id": "c191a5d.5d76258",
+        "type": "subflow",
+        "name": "Update core config",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 70,
+                "y": 77,
+                "wires": [
+                    {
+                        "id": "eb6f8564.c5a668"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 965,
+                "y": 161,
+                "wires": [
+                    {
+                        "id": "9110855e.8bfd98",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 965,
+                "y": 217,
+                "wires": [
+                    {
+                        "id": "9110855e.8bfd98",
+                        "port": 1
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "Name",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "Function",
+                "type": "str",
+                "value": ""
+            }
+        ],
+        "color": "#DDAA99",
+        "outputLabels": [
+            "Node Config",
+            "Config"
+        ]
+    },
+    {
+        "id": "1dd16422.6e81ec",
+        "type": "function",
+        "z": "c191a5d.5d76258",
+        "name": "",
+        "func": "let config = msg.config;\nlet pluginName = env.get(\"Name\");\nif(config===undefined) return;\nif(config[pluginName]===undefined) {config[pluginName] = {}}\nconfig[pluginName][msg.topic] = msg.payload;\nnode.send({payload:config});",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 344,
+        "y": 112,
+        "wires": [
+            [
+                "b562cc0e.728b4"
+            ]
+        ]
+    },
+    {
+        "id": "b562cc0e.728b4",
+        "type": "nibe-output",
+        "z": "c191a5d.5d76258",
+        "server": "844659a2.8d8508",
+        "name": "setConfig",
+        "x": 529,
+        "y": 112,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb6f8564.c5a668",
+        "type": "nibe-request",
+        "z": "c191a5d.5d76258",
+        "server": "844659a2.8d8508",
+        "name": "Config",
+        "x": 197,
+        "y": 77,
+        "wires": [
+            [
+                "1dd16422.6e81ec"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "9110855e.8bfd98",
+        "type": "function",
+        "z": "c191a5d.5d76258",
+        "name": "",
+        "func": "    let topic = env.get(\"Function\");\n    //let language = \"SE\";\n    //if(msg.payload.system!==undefined && msg.payload.system.language!==undefined) {\n    //    language = msg.payload.system.language;\n    //}\n    let pluginName = env.get(\"Name\");\n    //let translate = global.get('translate');\n    //let info = topic;\n    //if(translate!==undefined && translate.dash!==undefined && translate.dash[topic]!==undefined && translate.dash[topic][language]!==undefined) {\n    //    info = translate.dash[topic][language]\n    //}\n\n    if(topic!==undefined) {\n        if(msg.payload[pluginName]===undefined) {\n            msg.payload[pluginName] = {};\n        }\n        if(msg.payload[pluginName][topic]!==undefined) {\n            node.send({payload:msg.payload[pluginName][topic],topic:\"Start\"});\n            //if(info!==topic) {\n            //node.send({label:info});    \n            //}\n            node.send([null,{topic:\"config\",payload:msg.payload}]);\n        }\n        //if(pluginName==\"info\") {\n        //    node.send({label:info});\n        //}\n    }",
+        "outputs": 2,
+        "noerr": 0,
+        "x": 330,
+        "y": 161,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "d92d33b1.e333d",
+        "type": "nibe-request",
+        "z": "c191a5d.5d76258",
+        "server": "844659a2.8d8508",
+        "name": "Config",
+        "x": 169,
+        "y": 175,
+        "wires": [
+            [],
+            [
+                "9110855e.8bfd98"
+            ]
+        ]
+    },
+    {
+        "id": "520d09d6.d3cbb8",
+        "type": "inject",
+        "z": "c191a5d.5d76258",
+        "name": "",
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 133,
+        "y": 231,
+        "wires": [
+            [
+                "d92d33b1.e333d"
+            ]
+        ]
+    },
+    {
+        "id": "a9a8b1e1.e176b",
+        "type": "nibe-input",
+        "z": "c191a5d.5d76258",
+        "server": "844659a2.8d8508",
+        "name": "Config",
+        "x": 92,
+        "y": 126,
+        "wires": [
+            [
+                "9110855e.8bfd98"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "844659a2.8d8508",
+        "type": "nibe-config",
+        "z": "",
+        "mqtt": true,
+        "mqtt_discovery": true,
+        "mqtt_topic": "nibe/modbus/",
+        "mqtt_host": "127.0.0.1",
+        "mqtt_port": "1883",
+        "mqtt_user": "",
+        "mqtt_pass": "",
+        "connection_series": "fSeries",
+        "connection": "serial",
+        "serial_port": "/dev/ttyAMA0",
+        "tcp_server": "",
+        "tcp_port": ""
+    },
+    {
+        "id": "e41447a5.25cff8",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "fan",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "night_flow_start",
+                "type": "str"
+            }
+        ],
+        "x": 590,
+        "y": 1340,
+        "wires": [
+            [
+                "2dc22347.d69d54"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "2dc22347.d69d54",
+        "type": "subflow:f947788.96a2488",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "airflow_night_start",
+                "type": "str"
+            }
+        ],
+        "x": 780,
+        "y": 1340,
+        "wires": [
+            [
+                "d348346a.b8464"
+            ]
+        ]
+    },
+    {
+        "id": "d348346a.b8464",
+        "type": "ui_text_input",
+        "z": "ae9d7ce8.0991c",
+        "name": "Luftflöde natt start",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "63102fdf.db0928",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "time",
+        "delay": 300,
+        "topic": "fan/night_flow_start",
+        "x": 990,
+        "y": 1340,
+        "wires": [
+            [
+                "ed6e5604.1f1578"
+            ]
+        ]
+    },
+    {
+        "id": "bcd3e79f.73ef",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "fan",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "night_flow_stop",
+                "type": "str"
+            }
+        ],
+        "x": 590,
+        "y": 1380,
+        "wires": [
+            [
+                "fec9ab05.6f2de8"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "fec9ab05.6f2de8",
+        "type": "subflow:f947788.96a2488",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "airflow_night_stop",
+                "type": "str"
+            }
+        ],
+        "x": 780,
+        "y": 1380,
+        "wires": [
+            [
+                "e0d73812.af16c"
+            ]
+        ]
+    },
+    {
+        "id": "e0d73812.af16c",
+        "type": "ui_text_input",
+        "z": "ae9d7ce8.0991c",
+        "name": "Luftflöde natt stop",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "63102fdf.db0928",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "time",
+        "delay": 300,
+        "topic": "fan/night_flow_stop",
+        "x": 990,
+        "y": 1380,
+        "wires": [
+            [
+                "ed6e5604.1f1578"
+            ]
+        ]
+    },
+    {
+        "id": "39868f2d.83d9f",
+        "type": "ui_switch",
+        "z": "ae9d7ce8.0991c",
+        "name": "Aktivera",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "63102fdf.db0928",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": "true",
+        "topic": "fan/night_flow_enable",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "x": 960,
+        "y": 1300,
+        "wires": [
+            [
+                "ed6e5604.1f1578"
+            ]
+        ]
+    },
+    {
+        "id": "6c5a6b13.2f9764",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "fan",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "night_flow_enable",
+                "type": "str"
+            }
+        ],
+        "x": 590,
+        "y": 1300,
+        "wires": [
+            [
+                "c8c832f0.3e17b"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "c8c832f0.3e17b",
+        "type": "subflow:f947788.96a2488",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "enable",
+                "type": "str"
+            }
+        ],
+        "x": 780,
+        "y": 1300,
+        "wires": [
+            [
+                "39868f2d.83d9f"
+            ]
+        ]
+    },
+    {
+        "id": "52c5e6da.2884c8",
+        "type": "subflow:f947788.96a2488",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "airflow_night_info",
+                "type": "str"
+            }
+        ],
+        "x": 780,
+        "y": 1260,
+        "wires": [
+            [
+                "2d6fa457.77faac"
+            ]
+        ]
+    },
+    {
+        "id": "2d6fa457.77faac",
+        "type": "ui_text",
+        "z": "ae9d7ce8.0991c",
+        "group": "63102fdf.db0928",
+        "order": 1,
+        "width": "12",
+        "height": "1",
+        "name": "Information",
+        "label": "{{msg.label}}",
+        "format": "",
+        "layout": "row-spread",
+        "x": 970,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "2f8a47df.44d7b8",
+        "type": "subflow:c191a5d.5d76258",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "fan",
+                "type": "str"
+            },
+            {
+                "name": "Function",
+                "value": "night_flow",
+                "type": "str"
+            }
+        ],
+        "x": 590,
+        "y": 1420,
+        "wires": [
+            [
+                "1656af8a.41aa7"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "1656af8a.41aa7",
+        "type": "subflow:f947788.96a2488",
+        "z": "ae9d7ce8.0991c",
+        "name": "",
+        "env": [
+            {
+                "name": "Name",
+                "value": "airflow_night_flow",
+                "type": "str"
+            }
+        ],
+        "x": 780,
+        "y": 1420,
+        "wires": [
+            [
+                "cffc7fec.711a2",
+                "65fc484a.497d18"
+            ]
+        ]
+    },
+    {
+        "id": "cffc7fec.711a2",
+        "type": "ui_slider",
+        "z": "ae9d7ce8.0991c",
+        "name": "Luftflöde natt ",
+        "label": "{{msg.label}}",
+        "tooltip": "",
+        "group": "63102fdf.db0928",
+        "order": 5,
+        "width": "0",
+        "height": "0",
+        "passthru": false,
+        "outs": "end",
+        "topic": "fan/night_flow",
+        "min": "0",
+        "max": "350",
+        "step": "1",
+        "x": 970,
+        "y": 1420,
+        "wires": [
+            [
+                "ed6e5604.1f1578"
+            ]
+        ]
+    },
+    {
+        "id": "9fbf8d6c.34634",
+        "type": "mqtt in",
+        "z": "ae9d7ce8.0991c",
+        "name": "nibe/input/airflow_night",
+        "topic": "nibe/input/airflow_night",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "36ff2522.9ced4a",
+        "x": 600,
+        "y": 1460,
+        "wires": [
+            [
+                "1656af8a.41aa7"
+            ]
+        ]
+    },
+    {
+        "id": "65fc484a.497d18",
+        "type": "mqtt out",
+        "z": "ae9d7ce8.0991c",
+        "name": "nibe/output/airflow_night",
+        "topic": "nibe/output/airflow_night",
+        "qos": "",
+        "retain": "",
+        "broker": "36ff2522.9ced4a",
+        "x": 1010,
+        "y": 1480,
+        "wires": []
+    },
+    {
+        "id": "63102fdf.db0928",
+        "type": "ui_group",
+        "z": "",
+        "name": "Luftflöde natt",
+        "tab": "57a2c311.41401c",
+        "order": 6,
+        "disp": false,
+        "width": "12",
+        "collapse": false
+    },
+    {
+        "id": "36ff2522.9ced4a",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "Home Assistant",
+        "broker": "192.168.0.5",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "57a2c311.41401c",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Automatiskt luftflöde",
+        "icon": "wi-darksky-tornado",
+        "order": 5,
+        "disabled": false,
+        "hidden": false
     }
+]
 ]
